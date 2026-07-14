@@ -12,27 +12,16 @@
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue'
-    const name = ref("name");
-    const email = ref("email");
-    const users = ref([]);
+    import { ref } from 'vue'
 
-    onMounted(async () => {
-        const response = await fetch(
-            "https://treehousechallenge.contractornation.com/newsletter",
-            {
-            method: "GET",
-            headers: {
-                Authorization: "3b7d7b60-7ed1-11f1-8328-0963ebbe9e26",
-                "Content-Type": "application/json",
-            },
-            }
-        );
+    const props = defineProps({
+        users: Array
+    })
 
-        users.value = await response.json();
-
-        console.log(users.value);
-    });
+    /*remember that it matches based on the name of the .js variable, so the parameter in ref just determines it's default
+    value*/
+    const name = ref("");
+    const email = ref("");
 
     async function CreateUser(){
         if ((name.value == "") || (name == undefined)){
@@ -62,9 +51,11 @@
 
         const result = await response.json();
         console.log(result);
-        console.log("Create pressed");
 
-        users.value.push(result);   //needed to update users state
+        /*needed to update users state. If you didn't modify the props directly, the data wouldn't be displayed correctly
+        on the list page*/
+        props.users.push(result);   
+        alert("Successfully created user");
     }
 
     async function DeleteUser(){
@@ -78,7 +69,7 @@
         }
 
 
-        const USER = users.value.find(user => user.email === email.value);
+        const USER = props.users.find(user => user.email === email.value);
         if (USER == undefined){
             alert("User is undefined");
             return;
@@ -103,10 +94,12 @@
 
         const result = await response.json();
         console.log(result);
-        if (result.ok){
-            users.value = users.value.filter(user => user.id !== ID); //removes user
+        if (response.ok){
+            const index = props.users.findIndex(user => user.id === ID);
+            props.users.splice(index, 1); //removes user
         }
 
-        console.log("Create pressed");
+        
+        alert("Successfully deleted user");
     }
 </script>
