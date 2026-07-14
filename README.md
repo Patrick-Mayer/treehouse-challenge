@@ -1,1 +1,1 @@
-The queries can be found in TreehouseReporting.sql
+The queries can be found in TreehouseReporting.sql, and there are 3 separate .csv files for the data.
